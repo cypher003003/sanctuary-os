@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT: SANCTUARY OS | Home</title>
+    <meta name="description" content="PROJECT: SANCTUARY OS - IoT Engineering & Cybersecurity Masterclass">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --bg-deep: #0a0b0f; --bg-primary: #0d1117; --bg-secondary: #111820;
+            --bg-card: #141c26; --bg-glass: rgba(16, 22, 36, 0.75);
+            --border-subtle: rgba(255, 255, 255, 0.06); --border-glow: rgba(0, 255, 136, 0.25);
+            --border-cyan: rgba(0, 207, 255, 0.2); --neon-green: #00ff88; --neon-cyan: #00cfff;
+            --neon-green-dim: rgba(0, 255, 136, 0.15); --neon-cyan-dim: rgba(0, 207, 255, 0.1);
+            --text-primary: #e8eaed; --text-secondary: #b0b8c1; --text-muted: #6b7280;
+            --accent-red: #ff4757; --accent-amber: #ffa502; --accent-purple: #a855f7;
+            --shadow-glow-green: 0 0 30px rgba(0, 255, 136, 0.2);
+            --shadow-glow-cyan: 0 0 30px rgba(0, 207, 255, 0.18);
+            --shadow-card: 0 8px 40px rgba(0, 0, 0, 0.5);
+            --radius-sm: 10px; --radius-md: 16px; --radius-lg: 24px; --radius-xl: 32px;
+            --font-heading: 'Orbitron', sans-serif; --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace; --nav-height: 70px;
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; font-size:16px; }
+        body { background:var(--bg-deep); color:var(--text-primary); font-family:var(--font-body);
+               line-height:1.6; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+        #particles-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+        .bg-grid { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none;
+                   background-image: linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+                                     linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+                   background-size:40px 40px; animation:gridPulse 8s ease-in-out infinite; }
+        @keyframes gridPulse { 0%,100% { opacity:0.5; } 50% { opacity:0.9; } }
+        .bg-hex-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none;
+                          opacity:0.04; background-image: url("data:image/svg+xml,%3Csvg width='60' height='52' viewBox='0 0 60 52' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='30,0 60,15 60,37 30,52 0,37 0,15' fill='none' stroke='%2300ff88' stroke-width='0.5'/%3E%3C/svg%3E");
+                          background-size:60px 52px; }
+        ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background:var(--neon-green-dim); border-radius:3px; }
+        ::-webkit-scrollbar-thumb:hover { background:var(--neon-green); }
+        .navbar { position:fixed; top:0; left:0; width:100%; height:var(--nav-height); z-index:1000;
+                  display:flex; align-items:center; justify-content:space-between; padding:0 32px;
+                  background:rgba(10,11,15,0.7); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+                  border-bottom:1px solid var(--border-subtle); transition:all var(--transition-smooth); }
+        .navbar.scrolled { background:rgba(10,11,15,0.95); border-bottom:1px solid var(--border-glow);
+                           box-shadow:0 4px 30px rgba(0,0,0,0.6); }
+        .nav-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+        .nav-logo { width:42px; height:42px; border-radius:var(--radius-sm);
+                    background:linear-gradient(135deg, var(--neon-green-dim), var(--neon-cyan-dim));
+                    border:1.5px solid var(--border-glow); display:flex; align-items:center; justify-content:center;
+                    font-family:var(--font-heading); font-weight:900; font-size:1.2rem; color:var(--neon-green);
+                    text-shadow:0 0 20px var(--neon-green); animation:logoGlow 3s ease-in-out infinite; }
+        @keyframes logoGlow { 0%,100%{box-shadow:0 0 15px rgba(0,255,136,0.3)} 50%{box-shadow:0 0 35px rgba(0,255,136,0.7)} }
+        .nav-brand-text { display:flex; flex-direction:column; }
+        .nav-brand-title { font-family:var(--font-heading); font-weight:700; font-size:0.95rem; color:var(--text-primary); letter-spacing:1px; line-height:1; }
+        .nav-brand-sub { font-size:0.65rem; color:var(--neon-green); letter-spacing:1.5px; font-family:var(--font-mono); text-transform:uppercase; }
+        .nav-links { display:flex; list-style:none; gap:6px; align-items:center; }
+        .nav-links a { text-decoration:none; color:var(--text-secondary); font-size:0.8rem; font-weight:500; padding:8px 14px; border-radius:20px; transition:all var(--transition-fast); letter-spacing:0.5px; }
+        .nav-links a:hover { color:var(--neon-green); background:var(--neon-green-dim); text-shadow:0 0 10px var(--neon-green); }
+        .nav-actions { display:flex; align-items:center; gap:12px; }
+        .btn-nav { padding:9px 20px; border-radius:22px; font-size:0.8rem; font-weight:600; cursor:pointer; transition:all var(--transition-fast); border:1px solid transparent; letter-spacing:0.5px; font-family:var(--font-body); text-decoration:none; display:inline-block; }
+        .btn-login { background:transparent; border:1px solid var(--border-subtle); color:var(--text-primary); }
+        .btn-login:hover { border-color:var(--neon-green); color:var(--neon-green); box-shadow:0 0 20px rgba(0,255,136,0.2); }
+        .btn-register { background:var(--neon-green); color:#000; border:1px solid var(--neon-green); font-weight:700; animation:btnPulse 2.5s ease-in-out infinite; }
+        @keyframes btnPulse { 0%,100%{box-shadow:0 0 15px rgba(0,255,136,0.4)} 50%{box-shadow:0 0 35px rgba(0,255,136,0.9)} }
+        .btn-register:hover { background:#00e677; transform:translateY(-2px); box-shadow:0 0 45px rgba(0,255,136,1); }
+        .dark-mode-toggle { width:38px; height:38px; border-radius:50%; background:var(--bg-glass); border:1px solid var(--border-subtle); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:var(--text-secondary); }
+        .dark-mode-toggle:hover { border-color:var(--neon-cyan); color:var(--neon-cyan); box-shadow:0 0 20px rgba(0,207,255,0.3); }
+        .nav-toggle { display:none; background:none; border:none; color:var(--text-primary); font-size:1.5rem; cursor:pointer; padding:6px; }
+        .main-content { position:relative; z-index:1; padding-top:var(--nav-height); animation: pageFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both; }
+        @keyframes pageFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-section { min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:40px 32px; position:relative; gap:30px; }
+        .hero-top { width:100%; max-width:1200px; margin:0 auto; }
+        .hero-bottom { display:flex; width:100%; max-width:1200px; margin:0 auto; gap:40px; align-items:center; }
+        .hero-left { flex:1; z-index:2; max-width:600px; }
+        .hero-right { flex:1; display:flex; align-items:center; justify-content:center; position:relative; min-height:500px; }
+        .hero-welcome { font-family:var(--font-mono); font-size:0.75rem; letter-spacing:4px; color:var(--neon-cyan); text-transform:uppercase; margin-bottom:12px; }
+        .hero-title { font-family:var(--font-heading); font-size:clamp(2.5rem,5vw,4.5rem); font-weight:900; line-height:1.1; color:#fff; margin-bottom:8px; letter-spacing:2px; }
+        .hero-title span { background:linear-gradient(135deg, var(--neon-green), var(--neon-cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .hero-subtitle { font-family:var(--font-heading); font-size:1rem; letter-spacing:3px; color:var(--text-secondary); margin-bottom:6px; }
+        .hero-tagline { font-family:var(--font-mono); font-size:0.85rem; letter-spacing:2px; color:var(--neon-green); margin-bottom:20px; }
+        .hero-badges { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+        .hero-badge { padding:8px 16px; border-radius:20px; background:var(--bg-glass); border:1px solid var(--border-glow); font-size:0.75rem; font-weight:500; color:var(--text-primary); font-family:var(--font-mono); letter-spacing:0.5px; backdrop-filter:blur(10px); display:flex; align-items:center; gap:6px; }
+        .hero-badge .dot { width:7px; height:7px; border-radius:50%; background:var(--neon-green); animation:dotPulse 1.5s ease-in-out infinite; }
+        @keyframes dotPulse { 0%,100%{opacity:1; box-shadow:0 0 6px var(--neon-green)} 50%{opacity:0.3; box-shadow:0 0 2px var(--neon-green)} }
+        .hero-desc { color:var(--text-secondary); font-size:0.9rem; line-height:1.7; margin-bottom:28px; max-width:500px; }
+        .hero-cta { display:flex; gap:16px; flex-wrap:wrap; }
+        .btn-primary { padding:14px 32px; border-radius:28px; font-size:0.9rem; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block; letter-spacing:1px; font-family:var(--font-body); background:var(--neon-green); color:#000; border:none; box-shadow:0 0 30px rgba(0,255,136,0.4); transition:all var(--transition-fast); }
+        .btn-primary:hover { transform:translateY(-3px); box-shadow:0 0 50px rgba(0,255,136,0.7); }
+        .btn-secondary { padding:14px 32px; border-radius:28px; font-size:0.9rem; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; letter-spacing:1px; font-family:var(--font-body); background:transparent; color:var(--neon-cyan); border:1.5px solid var(--neon-cyan); transition:all var(--transition-fast); }
+        .btn-secondary:hover { background:rgba(0,207,255,0.1); box-shadow:0 0 30px rgba(0,207,255,0.4); transform:translateY(-3px); }
+        .hero-logos { display:flex; gap:20px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
+        .hero-logos img { height:50px; max-width:150px; object-fit:contain; filter:drop-shadow(0 0 6px rgba(0,255,136,0.3)); transition:transform 0.3s; }
+        .hero-logos img:hover { transform:scale(1.05); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        #globe-container { width:100%; max-width:550px; height:550px; position:relative; z-index:2; }
+        #globe-container canvas { width:100% !important; height:100% !important; }
+        .floating-card { position:absolute; z-index:3; background:var(--bg-glass); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid var(--border-glow); border-radius:var(--radius-md); padding:16px 20px; box-shadow:var(--shadow-card); }
+        .floating-card.status-card { top:5%; right:-20px; min-width:200px; animation:floatCard 4s ease-in-out infinite; }
+        .floating-card.countdown-card { bottom:8%; right:-30px; min-width:220px; animation:floatCard 4s ease-in-out infinite 1s; }
+        @keyframes floatCard { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        .floating-card h4 { font-family:var(--font-heading); font-size:0.7rem; letter-spacing:2px; color:var(--neon-cyan); margin-bottom:10px; text-transform:uppercase; }
+        .floating-card .stat-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; font-size:0.7rem; font-family:var(--font-mono); color:var(--text-secondary); border-bottom:1px solid var(--border-subtle); }
+        .floating-card .stat-row .val { color:var(--neon-green); font-weight:600; }
+        .floating-card .stat-row .val.active { animation:statusBlink 2s ease-in-out infinite; }
+        @keyframes statusBlink { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        .countdown-display { display:flex; gap:8px; font-family:var(--font-mono); }
+        .countdown-unit { text-align:center; background:rgba(0,0,0,0.4); border-radius:var(--radius-sm); padding:8px 6px; min-width:44px; border:1px solid var(--border-subtle); }
+        .countdown-unit .num { font-size:1.3rem; font-weight:700; color:var(--neon-green); letter-spacing:1px; }
+        .countdown-unit .lbl { font-size:0.55rem; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase; }
+        .section-container { max-width:1300px; margin:0 auto; padding:60px 32px; position:relative; z-index:2; }
+        .section-header { text-align:center; margin-bottom:50px; }
+        .section-label { font-family:var(--font-mono); font-size:0.7rem; letter-spacing:4px; color:var(--neon-cyan); text-transform:uppercase; margin-bottom:8px; }
+        .section-title { font-family:var(--font-heading); font-size:clamp(1.6rem,3vw,2.4rem); font-weight:800; letter-spacing:2px; color:#fff; }
+        .section-title span { color:var(--neon-green); }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:20px; }
+        .stat-card { background:var(--bg-glass); backdrop-filter:blur(12px); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:28px 20px; text-align:center; transition:all var(--transition-smooth); cursor:default; position:relative; overflow:hidden; }
+        .stat-card:hover { transform:translateY(-8px); border-color:var(--border-glow); box-shadow:var(--shadow-glow-green); }
+        .stat-card .stat-icon { font-size:2.2rem; margin-bottom:12px; display:block; }
+        .stat-card .stat-number { font-family:var(--font-heading); font-size:2rem; font-weight:800; color:var(--neon-green); letter-spacing:1px; }
+        .stat-card .stat-label { font-size:0.8rem; color:var(--text-secondary); margin-top:4px; }
+        .mentors-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:20px; }
+        .mentor-card { background:var(--bg-glass); backdrop-filter:blur(12px); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px; text-align:center; transition:all var(--transition-smooth); }
+        .mentor-card:hover { border-color:var(--border-glow); box-shadow:var(--shadow-glow-green); transform:translateY(-4px); }
+        .mentor-photo { width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid var(--border-glow); margin:0 auto 12px; background:var(--neon-green-dim); display:flex; align-items:center; justify-content:center; font-size:2rem; }
+        .mentor-name { font-family:var(--font-heading); font-size:0.9rem; letter-spacing:1px; margin-bottom:4px; }
+        .mentor-role { font-size:0.7rem; color:var(--neon-cyan); font-family:var(--font-mono); margin-bottom:8px; }
+        .mentor-bio { font-size:0.75rem; color:var(--text-secondary); }
+        .dashboard-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; }
+        .dash-card { background:var(--bg-glass); backdrop-filter:blur(12px); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px; transition:all var(--transition-smooth); }
+        .dash-card:hover { border-color:var(--border-glow); box-shadow:var(--shadow-glow-green); }
+        .dash-card h3 { font-family:var(--font-heading); font-size:0.85rem; letter-spacing:1.5px; color:var(--neon-cyan); margin-bottom:16px; text-transform:uppercase; }
+        .mission-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border-subtle); font-size:0.78rem; }
+        .progress-bar { flex:1; height:5px; background:rgba(255,255,255,0.08); border-radius:3px; margin:0 10px; overflow:hidden; }
+        .progress-fill { height:100%; border-radius:3px; background:linear-gradient(90deg, var(--neon-green), var(--neon-cyan)); transition:width 1s ease; }
+        .demo-list { list-style:none; font-size:0.78rem; }
+        .demo-list li { padding:7px 0; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; gap:8px; }
+        .demo-list .indicator { width:8px; height:8px; border-radius:50%; background:var(--neon-green); box-shadow:0 0 8px var(--neon-green); flex-shrink:0; }
+        .featured-project-img { width:100%; height:150px; background:linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,207,255,0.1)); border-radius:var(--radius-sm); margin-bottom:12px; display:flex; align-items:center; justify-content:center; font-size:3rem; border:1px solid var(--border-subtle); }
+        .btn-sm { padding:8px 18px; border-radius:18px; font-size:0.7rem; font-weight:600; cursor:pointer; border:1px solid var(--neon-green); background:transparent; color:var(--neon-green); transition:all var(--transition-fast); font-family:var(--font-body); letter-spacing:1px; text-decoration:none; display:inline-block; }
+        .btn-sm:hover { background:var(--neon-green-dim); box-shadow:0 0 20px rgba(0,255,136,0.3); }
+        .feed-item { padding:10px 0; border-bottom:1px solid var(--border-subtle); font-size:0.75rem; display:flex; align-items:flex-start; gap:8px; }
+        .feed-item .live-dot { width:7px; height:7px; border-radius:50%; background:#ff4757; flex-shrink:0; margin-top:4px; animation:dotPulse 1s infinite; }
+        .feed-item .time { font-size:0.65rem; color:var(--text-muted); }
+        .missions-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px,1fr)); gap:20px; }
+        .mission-card { background:var(--bg-glass); backdrop-filter:blur(14px); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:28px; transition:all var(--transition-smooth); position:relative; overflow:hidden; }
+        .mission-card:hover { border-color:var(--border-glow); box-shadow:var(--shadow-glow-green); transform:translateY(-4px); }
+        .mission-card .difficulty { display:inline-block; padding:4px 12px; border-radius:12px; font-size:0.65rem; font-weight:700; letter-spacing:1px; font-family:var(--font-mono); text-transform:uppercase; }
+        .difficulty.easy { background:rgba(0,255,136,0.15); color:var(--neon-green); }
+        .difficulty.medium { background:rgba(255,165,2,0.15); color:var(--accent-amber); }
+        .difficulty.hard { background:rgba(255,71,87,0.15); color:var(--accent-red); }
+        .mission-card h4 { font-family:var(--font-heading); font-size:1rem; margin:12px 0 8px; letter-spacing:1px; }
+        .mission-card .meta { font-size:0.7rem; color:var(--text-muted); font-family:var(--font-mono); }
+        .soc-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; }
+        .soc-widget { background:var(--bg-glass); backdrop-filter:blur(12px); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:20px; text-align:center; transition:all var(--transition-smooth); }
+        .soc-widget:hover { border-color:var(--border-cyan); box-shadow:var(--shadow-glow-cyan); }
+        .gauge { width:80px; height:80px; border-radius:50%; margin:0 auto 10px; position:relative; display:flex; align-items:center; justify-content:center; font-family:var(--font-heading); font-weight:700; font-size:1.1rem; color:var(--neon-green); }
+        .gauge::before { content:''; position:absolute; inset:6px; border-radius:50%; background:var(--bg-deep); z-index:0; }
+        .gauge span { position:relative; z-index:1; }
+        .projects-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; }
+        .project-card { background:var(--bg-glass); backdrop-filter:blur(12px); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden; transition:all var(--transition-smooth); }
+        .project-card:hover { border-color:var(--border-glow); box-shadow:var(--shadow-glow-green); transform:translateY(-5px); }
+        .project-card .proj-img { height:160px; background:linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,207,255,0.08)); display:flex; align-items:center; justify-content:center; font-size:3.5rem; border-bottom:1px solid var(--border-subtle); }
+        .project-card .proj-body { padding:18px; }
+        .project-card h4 { font-family:var(--font-heading); font-size:0.85rem; letter-spacing:1px; margin-bottom:6px; }
+        .terminal-section { background:rgba(0,0,0,0.6); border:1px solid var(--border-glow); border-radius:var(--radius-lg); overflow:hidden; max-width:800px; margin:0 auto; }
+        .terminal-header { background:rgba(0,0,0,0.8); padding:10px 16px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border-subtle); }
+        .terminal-dot { width:11px; height:11px; border-radius:50%; }
+        .terminal-dot.red { background:#ff5f57; } .terminal-dot.yellow { background:#febc2e; } .terminal-dot.green { background:#28c840; }
+        .terminal-title { font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted); margin-left:8px; letter-spacing:1px; }
+        .terminal-body { padding:16px; font-family:var(--font-mono); font-size:0.8rem; min-height:200px; max-height:350px; overflow-y:auto; color:var(--neon-green); line-height:1.8; }
+        .terminal-input-line { display:flex; align-items:center; gap:6px; }
+        .terminal-prompt { color:var(--neon-cyan); font-weight:600; }
+        #terminal-input { background:transparent; border:none; color:var(--neon-green); font-family:var(--font-mono); font-size:0.8rem; flex:1; outline:none; caret-color:var(--neon-green); }
+        .terminal-output { color:var(--text-secondary); white-space:pre-wrap; }
+        .ai-assistant-btn { position:fixed; bottom:28px; right:28px; z-index:999; width:56px; height:56px; border-radius:50%; background:var(--neon-green); color:#000; border:none; cursor:pointer; font-size:1.4rem; font-weight:700; box-shadow:0 0 30px rgba(0,255,136,0.5); transition:all var(--transition-fast); display:flex; align-items:center; justify-content:center; animation:btnPulse 2.5s infinite; }
+        .ai-assistant-btn:hover { transform:scale(1.1); box-shadow:0 0 50px rgba(0,255,136,0.8); }
+        .ai-chat-panel { position:fixed; bottom:100px; right:28px; z-index:998; width:360px; max-height:480px; background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--border-glow); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); display:none; flex-direction:column; overflow:hidden; }
+        .ai-chat-panel.open { display:flex; }
+        .ai-chat-header { padding:14px 18px; border-bottom:1px solid var(--border-subtle); font-family:var(--font-heading); font-size:0.8rem; letter-spacing:1px; color:var(--neon-cyan); }
+        .ai-chat-messages { flex:1; padding:14px; overflow-y:auto; max-height:320px; font-size:0.78rem; display:flex; flex-direction:column; gap:10px; }
+        .ai-msg { padding:10px 14px; border-radius:var(--radius-sm); max-width:85%; line-height:1.5; }
+        .ai-msg.user { background:var(--neon-green-dim); align-self:flex-end; color:var(--text-primary); }
+        .ai-msg.bot { background:rgba(0,207,255,0.08); align-self:flex-start; color:var(--text-secondary); border:1px solid var(--border-cyan); }
+        .ai-chat-input-area { display:flex; border-top:1px solid var(--border-subtle); }
+        #ai-chat-input { flex:1; background:transparent; border:none; padding:12px 16px; color:var(--text-primary); font-family:var(--font-body); font-size:0.8rem; outline:none; }
+        #ai-send-btn { background:var(--neon-green); color:#000; border:none; padding:0 18px; cursor:pointer; font-weight:700; letter-spacing:1px; font-size:0.75rem; transition:all var(--transition-fast); }
+        #ai-send-btn:hover { background:#00e677; }
+        .footer { border-top:1px solid var(--border-subtle); padding:40px 32px; text-align:center; position:relative; z-index:2; background:rgba(10,11,15,0.8); backdrop-filter:blur(10px); }
+        .footer .tech-icons { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin:16px 0; font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted); }
+        .footer .social-icons { display:flex; justify-content:center; gap:16px; margin-top:16px; }
+        .footer .social-icons a { color:var(--text-secondary); font-size:1.2rem; transition:all var(--transition-fast); text-decoration:none; }
+        .footer .social-icons a:hover { color:var(--neon-green); }
+        @media (max-width:1024px) {
+            .hero-bottom { flex-direction:column; text-align:center; }
+            .hero-left { max-width:100%; }
+            .hero-right { min-height:350px; }
+            #globe-container { max-width:350px; height:350px; }
+            .floating-card { position:relative; right:auto; top:auto; bottom:auto; margin:8px; }
+            .floating-card.status-card, .floating-card.countdown-card { right:auto; }
+            .nav-links { display:none; } .nav-toggle { display:block; }
+            .nav-links.mobile-open { display:flex; flex-direction:column; position:absolute; top:var(--nav-height); left:0; width:100%; background:rgba(10,11,15,0.97); backdrop-filter:blur(20px); padding:20px; gap:10px; border-bottom:1px solid var(--border-glow); }
+            .ai-chat-panel { width:90vw; right:5vw; bottom:90px; }
+        }
+        @media (max-width:600px) {
+            .navbar { padding:0 16px; } .nav-brand-sub { display:none; }
+            .nav-actions .btn-nav { padding:7px 14px; font-size:0.7rem; }
+            .section-container { padding:30px 16px; } .hero-section { padding:20px 16px; }
+            .stats-grid { grid-template-columns:repeat(2,1fr); }
+            .countdown-display { gap:4px; } .countdown-unit { min-width:32px; padding:6px 4px; }
+            .countdown-unit .num { font-size:1rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas><div class="bg-grid"></div><div class="bg-hex-overlay"></div>
+
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="nav-brand">
+            <div class="nav-logo">SOS</div>
+            <div class="nav-brand-text">
+                <span class="nav-brand-title">SANCTUARY OS</span>
+                <span class="nav-brand-sub">IoT & Cybersecurity</span>
+            </div>
+        </a>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Menu">☰</button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="missions.html">Missions</a></li>
+            <li><a href="labs.html">Labs</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="schedule.html">Schedule</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="registration.html">Registration</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="dark-mode-toggle" id="dark-mode-toggle" title="Toggle Theme">🌓</button>
+            <a href="#" class="btn-nav btn-login">Login</a>
+            <a href="registration.html" class="btn-nav btn-register">Register</a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <section class="hero-section">
+            <!-- Full-width centered banner -->
+            <div class="hero-top" style="text-align:center; animation: fadeInUp 0.8s ease-out;">
+                <img src="https://i.ibb.co/4RhmywQ5/Chat-GPT-Image-Jun-22-2026-05-25-54-AM.png" 
+                     alt="Masterclass Banner" 
+                     style="max-width:60%; height:auto; filter:drop-shadow(0 0 10px rgba(0,255,136,0.3));">
+            </div>
+            <!-- Two-column layout for logos + text and globe -->
+            <div class="hero-bottom">
+                <div class="hero-left">
+                    <!-- Logos -->
+                    <div class="hero-logos">
+                        <img src="https://i.ibb.co/chFx9QZ0/brand-ico.png" alt="School Logo">
+                        <img src="https://i.ibb.co/p84K30h/Chat-GPT-Image-Jun-22-2026-06-23-45-AM.png" alt="Robust Data Developers">
+                    </div>
+                    <p class="hero-welcome">WELCOME TO</p>
+                    <h1 class="hero-title">PROJECT:<br><span>SANCTUARY</span></h1>
+                    <p class="hero-subtitle">IoT Engineering & Cybersecurity Masterclass</p>
+                    <p class="hero-tagline">BUILD • CONNECT • SECURE</p>
+                    <div class="hero-badges">
+                        <span class="hero-badge"><span class="dot"></span> 15–17 August 2026</span>
+                        <span class="hero-badge">📍 Hirmi, Chhattisgarh</span>
+                        <span class="hero-badge">🏫 The Aditya Birla Public School</span>
+                    </div>
+                    <p class="hero-desc">A 13-hour intensive, hands-on masterclass combining IoT engineering with cybersecurity, ethical hacking awareness, and real-world projects.</p>
+                    <div class="hero-cta">
+                        <a href="registration.html" class="btn-primary">⚡ Register Now</a>
+                        <a href="missions.html" class="btn-secondary">🔍 Explore Missions</a>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div id="globe-container"></div>
+                    <div class="floating-card status-card">
+                        <h4>🖥 SYSTEM STATUS</h4>
+                        <div class="stat-row"><span>IoT Nodes</span><span class="val">128</span></div>
+                        <div class="stat-row"><span>Network Security</span><span class="val active">ACTIVE</span></div>
+                        <div class="stat-row"><span>Threat Level</span><span class="val" style="color:#ffa502;">LOW</span></div>
+                        <div class="stat-row"><span>System Uptime</span><span class="val">24 Days</span></div>
+                    </div>
+                    <div class="floating-card countdown-card">
+                        <h4>⏳ MASTERCLASS STARTS IN</h4>
+                        <div class="countdown-display" id="countdown">
+                            <div class="countdown-unit"><div class="num" id="cd-days">00</div><div class="lbl">Days</div></div>
+                            <div class="countdown-unit"><div class="num" id="cd-hours">00</div><div class="lbl">Hrs</div></div>
+                            <div class="countdown-unit"><div class="num" id="cd-mins">00</div><div class="lbl">Min</div></div>
+                            <div class="countdown-unit"><div class="num" id="cd-secs">00</div><div class="lbl">Sec</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <div class="stats-grid">
+                <div class="stat-card"><span class="stat-icon">⏱️</span><div class="stat-number" data-target="13">0</div><div class="stat-label">Hours of Training</div></div>
+                <div class="stat-card"><span class="stat-icon">🛠️</span><div class="stat-number" data-target="8">0</div><div class="stat-label">Real-world Projects</div></div>
+                <div class="stat-card"><span class="stat-icon">💻</span><div class="stat-number" data-target="6">0</div><div class="stat-label">Live Cyber Demos</div></div>
+                <div class="stat-card"><span class="stat-icon">📜</span><div class="stat-number" data-target="1">0</div><div class="stat-label">Certificate</div></div>
+                <div class="stat-card"><span class="stat-icon">👨‍🏫</span><div class="stat-number" data-target="5">0</div><div class="stat-label">Expert Mentors</div></div>
+                <div class="stat-card"><span class="stat-icon">🙌</span><div class="stat-number" data-target="100">0</div><div class="stat-label">Hands-on Experience</div></div>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <div class="section-header">
+                <p class="section-label">Our Experts</p>
+                <h2 class="section-title">MEET THE <span>MENTORS</span></h2>
+            </div>
+            <div class="mentors-grid" id="mentorsContainer">
+                <p style="text-align:center; color:var(--text-muted);">Loading mentors...</p>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <div class="section-header"><p class="section-label">Command Center</p><h2 class="section-title">OPERATIONS <span>DASHBOARD</span></h2></div>
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <h3>🎯 Mission Overview</h3>
+                    <div class="mission-row"><span>Mission 01</span><div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>75%</div>
+                    <div class="mission-row"><span>Mission 02</span><div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>50%</div>
+                    <div class="mission-row"><span>Mission 03</span><div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>30%</div>
+                </div>
+                <div class="dash-card">
+                    <h3>🔬 Live Demonstrations</h3>
+                    <ul class="demo-list">
+                        <li><span class="indicator"></span> Wi-Fi Packet Monitoring</li>
+                        <li><span class="indicator"></span> Network Sniffing</li>
+                        <li><span class="indicator"></span> Social Engineering Awareness</li>
+                        <li><span class="indicator"></span> IoT Attack Simulation</li>
+                        <li><span class="indicator"></span> Secure IoT Deployment</li>
+                        <li><span class="indicator"></span> Incident Response</li>
+                    </ul>
+                </div>
+                <div class="dash-card">
+                    <h3>⭐ Featured Project</h3>
+                    <div class="featured-project-img">💊</div>
+                    <h4 style="font-family:var(--font-heading);font-size:0.8rem;">Smart Medicine Box</h4>
+                    <p style="font-size:0.7rem;color:var(--text-secondary);">Automated pill dispenser with IoT connectivity.</p>
+                    <a href="projects.html" class="btn-sm">View Project →</a>
+                </div>
+                <div class="dash-card">
+                    <h3>📡 Intelligence Feed</h3>
+                    <div class="feed-item"><span class="live-dot"></span><div><strong>Firmware Update</strong> v2.4.1<br><span class="time">2 min ago</span></div></div>
+                    <div class="feed-item"><span class="live-dot"></span><div><strong>New Project Added</strong> Smart Dam<br><span class="time">1 hr ago</span></div></div>
+                    <div class="feed-item"><span class="live-dot"></span><div><strong>Security Advisory</strong> CVE-2026-XXXX<br><span class="time">3 hrs ago</span></div></div>
+                    <div class="feed-item"><span class="live-dot"></span><div><strong>System Update</strong> All nodes synced<br><span class="time">6 hrs ago</span></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <div class="section-header"><p class="section-label">Training Protocol</p><h2 class="section-title">TRAINING <span>MISSIONS</span></h2></div>
+            <div class="missions-grid">
+                <div class="mission-card"><span class="difficulty easy">Beginner</span><h4>Mission 01: Micro-Architecture & Firmware</h4><p class="meta">⏱ 3 Hours • 📊 75%</p><p style="font-size:0.75rem;color:var(--text-secondary);">Learn ESP8266/ESP32 architecture, firmware flashing.</p><a href="missions.html" class="btn-sm">Launch Mission →</a></div>
+                <div class="mission-card"><span class="difficulty medium">Intermediate</span><h4>Mission 02: Network Layers & Telemetry</h4><p class="meta">⏱ 4 Hours • 📊 50%</p><p style="font-size:0.75rem;color:var(--text-secondary);">Deep dive into TCP/IP, MQTT, packet analysis.</p><a href="missions.html" class="btn-sm">Launch Mission →</a></div>
+                <div class="mission-card"><span class="difficulty hard">Advanced</span><h4>Mission 03: Enterprise Threat Analysis</h4><p class="meta">⏱ 6 Hours • 📊 30%</p><p style="font-size:0.75rem;color:var(--text-secondary);">Identify, analyze, and mitigate threats.</p><a href="missions.html" class="btn-sm">Launch Mission →</a></div>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <div class="section-header"><p class="section-label">Security Operations</p><h2 class="section-title">SOC <span>DASHBOARD</span></h2></div>
+            <div class="soc-grid">
+                <div class="soc-widget"><div class="gauge" style="background:conic-gradient(#00ff88 0% 85%, #1a1a2e 85% 100%);"><span>85%</span></div><p style="font-size:0.7rem;color:var(--text-secondary);">CPU Usage</p></div>
+                <div class="soc-widget"><div class="gauge" style="background:conic-gradient(#00cfff 0% 62%, #1a1a2e 62% 100%);"><span>62%</span></div><p style="font-size:0.7rem;color:var(--text-secondary);">Memory Usage</p></div>
+                <div class="soc-widget"><span style="font-size:2rem;">🔒</span><p style="font-family:var(--font-heading);color:#28c840;">Firewall: ACTIVE</p></div>
+                <div class="soc-widget"><span style="font-size:2rem;">📶</span><p style="font-family:var(--font-heading);color:var(--neon-cyan);">IoT Nodes: 128</p></div>
+                <div class="soc-widget"><span style="font-size:2rem;">⚠️</span><p style="font-family:var(--font-heading);color:#ffa502;">Active Threats: 2</p></div>
+                <div class="soc-widget"><span style="font-size:2rem;">✅</span><p style="font-family:var(--font-heading);color:#28c840;">System Health: Nominal</p></div>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <div class="section-header"><p class="section-label">Verify Authenticity</p><h2 class="section-title">CERTIFICATE <span>VERIFICATION</span></h2></div>
+            <div style="max-width:450px;margin:0 auto;text-align:center;">
+                <input type="text" placeholder="Enter Certificate ID" style="width:100%;padding:14px 18px;background:rgba(0,0,0,0.4);border:1px solid var(--border-glow);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-mono);font-size:0.8rem;margin-bottom:12px;outline:none;">
+                <button class="btn-primary">🔍 Verify Certificate</button>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <div class="section-header"><p class="section-label">Command Line Interface</p><h2 class="section-title">INTERACTIVE <span>TERMINAL</span></h2></div>
+            <div class="terminal-section">
+                <div class="terminal-header"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span><span class="terminal-title">SANCTUARY-OS-TERMINAL — bash</span></div>
+                <div class="terminal-body" id="terminal-body">
+                    <div class="terminal-output">Type <strong style="color:#00ff88;">help</strong> for available commands.</div>
+                    <div class="terminal-output">---</div>
+                </div>
+                <div style="padding:8px 16px;border-top:1px solid var(--border-subtle);display:flex;align-items:center;gap:6px;">
+                    <span class="terminal-prompt">sanctuary@os:~$</span>
+                    <input type="text" id="terminal-input" placeholder="type command..." autocomplete="off">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p style="font-family:var(--font-heading);letter-spacing:2px;">PROJECT: SANCTUARY OS</p>
+        <p style="font-size:0.7rem;color:var(--text-muted);">Prepared by <strong style="color:var(--neon-green);">Robust Data Developers</strong></p>
+        <div class="tech-icons"><span>Arduino</span> • <span>ESP8266</span> • <span>ESP32</span> • <span>Python</span> • <span>C++</span> • <span>Linux</span> • <span>GitHub</span> • <span>Wi-Fi</span></div>
+        <div class="social-icons"><a href="#">▶️</a><a href="#">📸</a><a href="#">💼</a><a href="#">🐙</a></div>
+        <p style="font-size:0.6rem;color:var(--text-muted);margin-top:12px;">© 2026 PROJECT: SANCTUARY OS.</p>
+    </footer>
+
+    <button class="ai-assistant-btn" id="ai-btn" title="AI Assistant">🤖</button>
+    <div class="ai-chat-panel" id="ai-chat-panel">
+        <div class="ai-chat-header">🤖 SANCTUARY AI ASSISTANT</div>
+        <div class="ai-chat-messages" id="ai-chat-messages">
+            <div class="ai-msg bot">Hello! I'm the SANCTUARY OS AI assistant. Ask me anything about the masterclass, curriculum, projects, schedule, or registration. Type <strong>help</strong> for options.</div>
+        </div>
+        <div class="ai-chat-input-area">
+            <input type="text" id="ai-chat-input" placeholder="Ask me anything...">
+            <button id="ai-send-btn">SEND</button>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG_zsukQSTR7TrMqoNSa3rWCzvDH7SuFE",
+            authDomain: "sanctuary-os-e635d.firebaseapp.com",
+            projectId: "sanctuary-os-e635d",
+            storageBucket: "sanctuary-os-e635d.firebasestorage.app",
+            messagingSenderId: "854153707207",
+            appId: "1:854153707207:web:33416025c871fbfbdec8e2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const particlesCanvas = document.getElementById('particles-canvas');
+        const pCtx = particlesCanvas.getContext('2d');
+        let particlesArr = [];
+        function resizeParticlesCanvas() { particlesCanvas.width = window.innerWidth; particlesCanvas.height = window.innerHeight; }
+        resizeParticlesCanvas(); window.addEventListener('resize', resizeParticlesCanvas);
+        class Particle {
+            constructor(){ this.reset(); }
+            reset(){ this.x = Math.random() * particlesCanvas.width; this.y = Math.random() * particlesCanvas.height; this.size = Math.random() * 2 + 0.5; this.speedX = (Math.random() - 0.5) * 0.6; this.speedY = (Math.random() - 0.5) * 0.6; this.opacity = Math.random() * 0.6 + 0.2; this.color = Math.random() < 0.5 ? '0,255,136' : '0,207,255'; }
+            update(){ this.x += this.speedX; this.y += this.speedY; if(this.x < 0 || this.x > particlesCanvas.width || this.y < 0 || this.y > particlesCanvas.height) this.reset(); }
+            draw(){ pCtx.beginPath(); pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); pCtx.fillStyle = `rgba(${this.color},${this.opacity})`; pCtx.shadowBlur = 8; pCtx.shadowColor = `rgba(${this.color},${this.opacity})`; pCtx.fill(); pCtx.shadowBlur = 0; }
+        }
+        for(let i = 0; i < 120; i++) particlesArr.push(new Particle());
+        function animateParticles() {
+            pCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+            particlesArr.forEach(p => { p.update(); p.draw(); });
+            for(let i = 0; i < particlesArr.length; i++) {
+                for(let j = i + 1; j < particlesArr.length; j++) {
+                    const dx = particlesArr[i].x - particlesArr[j].x;
+                    const dy = particlesArr[i].y - particlesArr[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if(dist < 100) {
+                        pCtx.beginPath();
+                        pCtx.moveTo(particlesArr[i].x, particlesArr[i].y);
+                        pCtx.lineTo(particlesArr[j].x, particlesArr[j].y);
+                        pCtx.strokeStyle = `rgba(0,255,136,${0.06 * (1 - dist/100)})`;
+                        pCtx.lineWidth = 0.5;
+                        pCtx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        const globeContainer = document.getElementById('globe-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, globeContainer.clientWidth / globeContainer.clientHeight, 0.1, 100);
+        camera.position.z = 5.5;
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(globeContainer.clientWidth, globeContainer.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        globeContainer.appendChild(renderer.domElement);
+        const globeGeom = new THREE.SphereGeometry(1.8, 48, 36);
+        const globeMat = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true, transparent: true, opacity: 0.18 });
+        const globe = new THREE.Mesh(globeGeom, globeMat); scene.add(globe);
+        const innerGlobeGeom = new THREE.SphereGeometry(1.75, 48, 36);
+        const innerGlobeMat = new THREE.MeshBasicMaterial({ color: 0x0a0b0f, transparent: true, opacity: 0.7 });
+        const innerGlobe = new THREE.Mesh(innerGlobeGeom, innerGlobeMat); scene.add(innerGlobe);
+        const dotsGroup = new THREE.Group();
+        for(let i = 0; i < 200; i++) {
+            const phi = Math.acos(2 * Math.random() - 1);
+            const theta = Math.random() * Math.PI * 2;
+            const x = 1.82 * Math.sin(phi) * Math.cos(theta);
+            const y = 1.82 * Math.sin(phi) * Math.sin(theta);
+            const z = 1.82 * Math.cos(phi);
+            const dotGeom = new THREE.SphereGeometry(0.03, 8, 8);
+            const dotMat = new THREE.MeshBasicMaterial({ color: 0x00ff88, transparent: true, opacity: 0.8 });
+            const dot = new THREE.Mesh(dotGeom, dotMat);
+            dot.position.set(x, y, z);
+            dotsGroup.add(dot);
+        }
+        scene.add(dotsGroup);
+        const indiaGeom = new THREE.SphereGeometry(0.12, 16, 16);
+        const indiaMat = new THREE.MeshBasicMaterial({ color: 0x00ff88, transparent: true, opacity: 0.9 });
+        const india = new THREE.Mesh(indiaGeom, indiaMat);
+        const indiaPhi = (90 - 20) * (Math.PI / 180);
+        const indiaTheta = 78 * (Math.PI / 180);
+        india.position.set(1.83 * Math.sin(indiaPhi) * Math.cos(indiaTheta), 1.83 * Math.cos(indiaPhi), 1.83 * Math.sin(indiaPhi) * Math.sin(indiaTheta));
+        scene.add(india);
+        const ringGeom = new THREE.TorusGeometry(2.1, 0.015, 16, 100);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x00cfff, transparent: true, opacity: 0.5 });
+        const ring = new THREE.Mesh(ringGeom, ringMat); ring.rotation.x = Math.PI / 2.5; scene.add(ring);
+        const ring2Geom = new THREE.TorusGeometry(2.3, 0.01, 16, 80);
+        const ring2Mat = new THREE.MeshBasicMaterial({ color: 0x00ff88, transparent: true, opacity: 0.3 });
+        const ring2 = new THREE.Mesh(ring2Geom, ring2Mat); ring2.rotation.x = Math.PI / 1.8; ring2.rotation.y = Math.PI / 3; scene.add(ring2);
+        function animateGlobe() {
+            requestAnimationFrame(animateGlobe);
+            globe.rotation.y += 0.002;
+            innerGlobe.rotation.y += 0.0015;
+            dotsGroup.rotation.y += 0.002;
+            india.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.002);
+            ring.rotation.z += 0.003;
+            ring2.rotation.z -= 0.002;
+            ring2.rotation.x += 0.001;
+            renderer.render(scene, camera);
+        }
+        animateGlobe();
+        window.addEventListener('resize', () => {
+            const w = globeContainer.clientWidth;
+            const h = globeContainer.clientHeight;
+            renderer.setSize(w, h);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+        });
+
+        const targetDate = new Date('2026-08-15T09:00:00+05:30').getTime();
+        function updateCountdown() {
+            const now = Date.now();
+            const diff = targetDate - now;
+            if (diff <= 0) {
+                document.getElementById('cd-days').textContent = '00';
+                document.getElementById('cd-hours').textContent = '00';
+                document.getElementById('cd-mins').textContent = '00';
+                document.getElementById('cd-secs').textContent = '00';
+                return;
+            }
+            const days = Math.floor(diff / (86400000));
+            const hours = Math.floor((diff % 86400000) / 3600000);
+            const mins = Math.floor((diff % 3600000) / 60000);
+            const secs = Math.floor((diff % 60000) / 1000);
+            document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+            document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+            document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        window.addEventListener('scroll', () => { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50); });
+        document.getElementById('nav-toggle').addEventListener('click', () => { document.getElementById('nav-links').classList.toggle('mobile-open'); });
+        document.querySelectorAll('.nav-links a').forEach(link => { link.addEventListener('click', () => { document.getElementById('nav-links').classList.remove('mobile-open'); }); });
+
+        const statObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseInt(el.getAttribute('data-target'));
+                    let current = 0;
+                    const duration = 1500;
+                    const step = Math.max(1, Math.floor(target / (duration / 16)));
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= target) { current = target; clearInterval(timer); }
+                        el.textContent = current + (target === 100 ? '%' : target === 1 ? '' : '+');
+                    }, 16);
+                    statObserver.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.stat-number[data-target]').forEach(el => statObserver.observe(el));
+
+        function loadMentors() {
+            const container = document.getElementById('mentorsContainer');
+            db.collection('mentors').get().then(snapshot => {
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">Mentors will be announced soon.</p>';
+                    return;
+                }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const m = doc.data();
+                    html += `
+                    <div class="mentor-card">
+                        ${m.photo ? `<img src="${m.photo}" class="mentor-photo" onerror="this.style.display='none';this.parentElement.innerHTML+='<div class=mentor-photo>👤</div>'">` : '<div class="mentor-photo">👤</div>'}
+                        <h3 class="mentor-name">${m.name}</h3>
+                        <p class="mentor-role">${m.role}</p>
+                        ${m.bio ? `<p class="mentor-bio">${m.bio}</p>` : ''}
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }).catch(() => { container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">Could not load mentors.</p>'; });
+        }
+        window.addEventListener('DOMContentLoaded', loadMentors);
+
+        const terminalInput = document.getElementById('terminal-input');
+        const terminalBody = document.getElementById('terminal-body');
+        const commands = {
+            help: 'Available commands: help, missions, projects, labs, schedule, resources, about, registration, clear, status',
+            missions: '🎯 MISSIONS:\n  Mission 01: Micro-Architecture & Firmware [3h, Beginner]\n  Mission 02: Network Layers & Telemetry [4h, Intermediate]\n  Mission 03: Enterprise Threat Analysis [6h, Advanced]',
+            projects: '🏗️ PROJECTS VAULT:\n  • Smart Medicine Box\n  • Smart Attendance System\n  • Smart Walking Stick\n  • Smart Bus Driver Safety\n  • Smart Water Monitoring\n  • Smart Dam Management\n  • Smart Train Protection\n  • Smart Bus Tracking',
+            labs: '🔬 LIVE LABS:\n  • ESP8266 Programming [Online]\n  • Sensor Integration [Online]\n  • MQTT Communication [Online]\n  • Cloud Dashboard Dev [Pending]\n  • Packet Analysis [Online]\n  • Secure IoT Deployment [Online]',
+            schedule: '📅 SCHEDULE:\n  DAY 1 (Aug 15): Micro-Architecture & Firmware\n  DAY 2 (Aug 16): Network Layers & Packet Analysis\n  DAY 3 (Aug 17): Threat Analysis & Certification',
+            resources: '📚 RESOURCES: PDF Notes, Arduino Code, ESP8266 Libraries, PPT Slides, Datasheets available for download.',
+            about: '👨‍💻 INSTRUCTOR: Robust Data Developers — IoT & Cybersecurity Specialists with 5+ years of experience.',
+            registration: '📝 Register now on the Registration page. Fill in your details and secure your spot!',
+            status: '🖥 SYSTEM STATUS: IoT Nodes: 128 | Network Security: ACTIVE | Threat Level: LOW | Uptime: 24 Days',
+            clear: '__CLEAR__'
+        };
+        terminalInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = this.value.trim().toLowerCase();
+                const outEl = document.createElement('div');
+                outEl.classList.add('terminal-output');
+                outEl.innerHTML = `<span style="color:#00cfff;">sanctuary@os:~$</span> <span style="color:#fff;">${cmd}</span>`;
+                terminalBody.appendChild(outEl);
+                if (cmd === 'clear') { terminalBody.innerHTML = ''; }
+                else if (commands[cmd]) { const respEl = document.createElement('div'); respEl.classList.add('terminal-output'); respEl.textContent = commands[cmd]; terminalBody.appendChild(respEl); }
+                else if (cmd) { const errEl = document.createElement('div'); errEl.classList.add('terminal-output'); errEl.style.color = '#ff4757'; errEl.textContent = `Command not found: ${cmd}. Type 'help' for available commands.`; terminalBody.appendChild(errEl); }
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+                this.value = '';
+            }
+        });
+
+        const aiBtn = document.getElementById('ai-btn');
+        const aiPanel = document.getElementById('ai-chat-panel');
+        const aiChatInput = document.getElementById('ai-chat-input');
+        const aiChatMessages = document.getElementById('ai-chat-messages');
+        aiBtn.addEventListener('click', () => { aiPanel.classList.toggle('open'); });
+        const aiResponses = {
+            hello: 'Hello! Welcome to PROJECT: SANCTUARY OS. How can I assist you today?',
+            hi: 'Hi there! Ready to explore the world of IoT & Cybersecurity? Ask me anything!',
+            help: 'I can help with: event details, curriculum, projects, schedule, registration, labs, missions, resources, and more!',
+            event: 'PROJECT: SANCTUARY OS is a 13-hour IoT Engineering & Cybersecurity Masterclass on 15-17 August 2026 at The Aditya Birla Public School, Hirmi, Chhattisgarh.',
+            curriculum: 'The curriculum covers: Micro-Architecture & Firmware, Network Layers & Telemetry, and Enterprise Threat Analysis across 3 intensive missions.',
+            projects: 'We have 8 amazing projects including Smart Medicine Box, Smart Attendance System, Smart Walking Stick, Smart Bus Driver Safety, and more!',
+            schedule: 'Day 1: Firmware & Sensors | Day 2: Networks & Packet Analysis | Day 3: Threat Analysis & Certification.',
+            registration: 'You can register through the registration form on the Registration page. Fill in your details and secure your spot!',
+            certificate: 'Yes! All participants receive a Certificate of Completion. You can verify certificates using the Certificate Verification section.',
+            labs: 'Our live labs include ESP8266 Programming, Sensor Integration, MQTT Communication, Packet Analysis, and Secure IoT Deployment.',
+            resources: 'Downloadable resources include PDF notes, Arduino source code, ESP8266 libraries, presentations, and datasheets.',
+            default: 'Great question! For more details, explore the dashboard sections or type "help" for options. You can also reach out via our social channels.'
+        };
+        function getAIResponse(msg) {
+            const lower = msg.toLowerCase();
+            for (const [key, response] of Object.entries(aiResponses)) {
+                if (lower.includes(key)) return response;
+            }
+            return aiResponses['default'];
+        }
+        function addAIMessage(text, type) {
+            const msgEl = document.createElement('div');
+            msgEl.classList.add('ai-msg', type);
+            msgEl.textContent = text;
+            aiChatMessages.appendChild(msgEl);
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+        }
+        document.getElementById('ai-send-btn').addEventListener('click', () => {
+            const msg = aiChatInput.value.trim();
+            if (!msg) return;
+            addAIMessage(msg, 'user');
+            aiChatInput.value = '';
+            setTimeout(() => { addAIMessage(getAIResponse(msg), 'bot'); }, 400);
+        });
+        aiChatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { document.getElementById('ai-send-btn').click(); } });
+
+        document.getElementById('dark-mode-toggle').addEventListener('click', function() {
+            if (document.body.style.background === 'rgb(240, 242, 245)') {
+                document.body.style.background = '#0a0b0f';
+                this.textContent = '🌓';
+            } else {
+                document.body.style.background = '#f0f2f5';
+                this.textContent = '☀️';
+            }
+        });
+    </script>
+</body>
+</html>
