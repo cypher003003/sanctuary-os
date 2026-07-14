@@ -76,7 +76,9 @@
         .nav-toggle { display:none; background:none; border:none; color:var(--text-primary); font-size:1.5rem; cursor:pointer; padding:6px; }
         .main-content { position:relative; z-index:1; padding-top:var(--nav-height); animation: pageFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both; }
         @keyframes pageFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-        .hero-section { min-height:100vh; display:flex; align-items:center; padding:40px 32px; position:relative; gap:40px; }
+        .hero-section { min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:40px 32px; position:relative; gap:30px; }
+        .hero-top { width:100%; max-width:1200px; margin:0 auto; }
+        .hero-bottom { display:flex; width:100%; max-width:1200px; margin:0 auto; gap:40px; align-items:center; }
         .hero-left { flex:1; z-index:2; max-width:600px; }
         .hero-right { flex:1; display:flex; align-items:center; justify-content:center; position:relative; min-height:500px; }
         .hero-welcome { font-family:var(--font-mono); font-size:0.75rem; letter-spacing:4px; color:var(--neon-cyan); text-transform:uppercase; margin-bottom:12px; }
@@ -94,6 +96,10 @@
         .btn-primary:hover { transform:translateY(-3px); box-shadow:0 0 50px rgba(0,255,136,0.7); }
         .btn-secondary { padding:14px 32px; border-radius:28px; font-size:0.9rem; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; letter-spacing:1px; font-family:var(--font-body); background:transparent; color:var(--neon-cyan); border:1.5px solid var(--neon-cyan); transition:all var(--transition-fast); }
         .btn-secondary:hover { background:rgba(0,207,255,0.1); box-shadow:0 0 30px rgba(0,207,255,0.4); transform:translateY(-3px); }
+        .hero-logos { display:flex; gap:20px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
+        .hero-logos img { height:50px; max-width:150px; object-fit:contain; filter:drop-shadow(0 0 6px rgba(0,255,136,0.3)); transition:transform 0.3s; }
+        .hero-logos img:hover { transform:scale(1.05); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         #globe-container { width:100%; max-width:550px; height:550px; position:relative; z-index:2; }
         #globe-container canvas { width:100% !important; height:100% !important; }
         .floating-card { position:absolute; z-index:3; background:var(--bg-glass); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid var(--border-glow); border-radius:var(--radius-md); padding:16px 20px; box-shadow:var(--shadow-card); }
@@ -193,9 +199,10 @@
         .footer .social-icons a { color:var(--text-secondary); font-size:1.2rem; transition:all var(--transition-fast); text-decoration:none; }
         .footer .social-icons a:hover { color:var(--neon-green); }
         @media (max-width:1024px) {
-            .hero-section { flex-direction:column; text-align:center; }
-            .hero-left { max-width:100%; } .hero-cta { justify-content:center; } .hero-badges { justify-content:center; }
-            .hero-desc { max-width:100%; } #globe-container { max-width:350px; height:350px; }
+            .hero-bottom { flex-direction:column; text-align:center; }
+            .hero-left { max-width:100%; }
+            .hero-right { min-height:350px; }
+            #globe-container { max-width:350px; height:350px; }
             .floating-card { position:relative; right:auto; top:auto; bottom:auto; margin:8px; }
             .floating-card.status-card, .floating-card.countdown-card { right:auto; }
             .nav-links { display:none; } .nav-toggle { display:block; }
@@ -242,46 +249,58 @@
     </nav>
 
     <div class="main-content">
-        <!-- Hero Section -->
-        <section class="hero-section section-container">
-            <div class="hero-left">
-                <p class="hero-welcome">WELCOME TO</p>
-                <h1 class="hero-title">PROJECT:<br><span>SANCTUARY</span></h1>
-                <p class="hero-subtitle">IoT Engineering & Cybersecurity Masterclass</p>
-                <p class="hero-tagline">BUILD • CONNECT • SECURE</p>
-                <div class="hero-badges">
-                    <span class="hero-badge"><span class="dot"></span> 15–17 August 2026</span>
-                    <span class="hero-badge">📍 Hirmi, Chhattisgarh</span>
-                    <span class="hero-badge">🏫 The Aditya Birla Public School</span>
-                </div>
-                <p class="hero-desc">A 13-hour intensive, hands-on masterclass combining IoT engineering with cybersecurity, ethical hacking awareness, and real-world projects.</p>
-                <div class="hero-cta">
-                    <a href="registration.html" class="btn-primary">⚡ Register Now</a>
-                    <a href="missions.html" class="btn-secondary">🔍 Explore Missions</a>
-                </div>
+        <section class="hero-section">
+            <!-- Full-width centered banner -->
+            <div class="hero-top" style="text-align:center; animation: fadeInUp 0.8s ease-out;">
+                <img src="https://github.com/cypher003003/sanctuary-os/blob/main/ChatGPT%20Image%20Jun%2022%2C%202026%2C%2005_25_54%20AM.png?raw=true" 
+                     alt="Masterclass Banner" 
+                     style="max-width:60%; height:auto; filter:drop-shadow(0 0 10px rgba(0,255,136,0.3));">
             </div>
-            <div class="hero-right">
-                <div id="globe-container"></div>
-                <div class="floating-card status-card">
-                    <h4>🖥 SYSTEM STATUS</h4>
-                    <div class="stat-row"><span>IoT Nodes</span><span class="val">128</span></div>
-                    <div class="stat-row"><span>Network Security</span><span class="val active">ACTIVE</span></div>
-                    <div class="stat-row"><span>Threat Level</span><span class="val" style="color:#ffa502;">LOW</span></div>
-                    <div class="stat-row"><span>System Uptime</span><span class="val">24 Days</span></div>
+            <!-- Two-column layout for logos + text and globe -->
+            <div class="hero-bottom">
+                <div class="hero-left">
+                    <!-- School and company logos -->
+                    <div class="hero-logos">
+                        <img src="https://github.com/cypher003003/sanctuary-os/blob/main/brand-ico.png?raw=true" alt="School Logo">
+                        <img src="https://github.com/cypher003003/sanctuary-os/blob/main/ChatGPT%20Image%20Jun%2022%2C%202026%2C%2006_23_45%20AM.png?raw=true" alt="Robust Data Developers">
+                    </div>
+                    <p class="hero-welcome">WELCOME TO</p>
+                    <h1 class="hero-title">PROJECT:<br><span>SANCTUARY</span></h1>
+                    <p class="hero-subtitle">IoT Engineering & Cybersecurity Masterclass</p>
+                    <p class="hero-tagline">BUILD • CONNECT • SECURE</p>
+                    <div class="hero-badges">
+                        <span class="hero-badge"><span class="dot"></span> 15–17 August 2026</span>
+                        <span class="hero-badge">📍 Hirmi, Chhattisgarh</span>
+                        <span class="hero-badge">🏫 The Aditya Birla Public School</span>
+                    </div>
+                    <p class="hero-desc">A 13-hour intensive, hands-on masterclass combining IoT engineering with cybersecurity, ethical hacking awareness, and real-world projects.</p>
+                    <div class="hero-cta">
+                        <a href="registration.html" class="btn-primary">⚡ Register Now</a>
+                        <a href="missions.html" class="btn-secondary">🔍 Explore Missions</a>
+                    </div>
                 </div>
-                <div class="floating-card countdown-card">
-                    <h4>⏳ MASTERCLASS STARTS IN</h4>
-                    <div class="countdown-display" id="countdown">
-                        <div class="countdown-unit"><div class="num" id="cd-days">00</div><div class="lbl">Days</div></div>
-                        <div class="countdown-unit"><div class="num" id="cd-hours">00</div><div class="lbl">Hrs</div></div>
-                        <div class="countdown-unit"><div class="num" id="cd-mins">00</div><div class="lbl">Min</div></div>
-                        <div class="countdown-unit"><div class="num" id="cd-secs">00</div><div class="lbl">Sec</div></div>
+                <div class="hero-right">
+                    <div id="globe-container"></div>
+                    <div class="floating-card status-card">
+                        <h4>🖥 SYSTEM STATUS</h4>
+                        <div class="stat-row"><span>IoT Nodes</span><span class="val">128</span></div>
+                        <div class="stat-row"><span>Network Security</span><span class="val active">ACTIVE</span></div>
+                        <div class="stat-row"><span>Threat Level</span><span class="val" style="color:#ffa502;">LOW</span></div>
+                        <div class="stat-row"><span>System Uptime</span><span class="val">24 Days</span></div>
+                    </div>
+                    <div class="floating-card countdown-card">
+                        <h4>⏳ MASTERCLASS STARTS IN</h4>
+                        <div class="countdown-display" id="countdown">
+                            <div class="countdown-unit"><div class="num" id="cd-days">00</div><div class="lbl">Days</div></div>
+                            <div class="countdown-unit"><div class="num" id="cd-hours">00</div><div class="lbl">Hrs</div></div>
+                            <div class="countdown-unit"><div class="num" id="cd-mins">00</div><div class="lbl">Min</div></div>
+                            <div class="countdown-unit"><div class="num" id="cd-secs">00</div><div class="lbl">Sec</div></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Statistics -->
         <section class="section-container">
             <div class="stats-grid">
                 <div class="stat-card"><span class="stat-icon">⏱️</span><div class="stat-number" data-target="13">0</div><div class="stat-label">Hours of Training</div></div>
@@ -293,18 +312,16 @@
             </div>
         </section>
 
-        <!-- Meet the Mentors (Firestore) -->
         <section class="section-container">
             <div class="section-header">
                 <p class="section-label">Our Experts</p>
                 <h2 class="section-title">MEET THE <span>MENTORS</span></h2>
             </div>
             <div class="mentors-grid" id="mentorsContainer">
-                <p style="text-align:center;color:var(--text-muted);">Loading mentors...</p>
+                <p style="text-align:center; color:var(--text-muted);">Loading mentors...</p>
             </div>
         </section>
 
-        <!-- Dashboard 4-Column -->
         <section class="section-container">
             <div class="section-header"><p class="section-label">Command Center</p><h2 class="section-title">OPERATIONS <span>DASHBOARD</span></h2></div>
             <div class="dashboard-grid">
@@ -342,7 +359,6 @@
             </div>
         </section>
 
-        <!-- Training Missions -->
         <section class="section-container">
             <div class="section-header"><p class="section-label">Training Protocol</p><h2 class="section-title">TRAINING <span>MISSIONS</span></h2></div>
             <div class="missions-grid">
@@ -352,7 +368,6 @@
             </div>
         </section>
 
-        <!-- SOC Dashboard -->
         <section class="section-container">
             <div class="section-header"><p class="section-label">Security Operations</p><h2 class="section-title">SOC <span>DASHBOARD</span></h2></div>
             <div class="soc-grid">
@@ -365,7 +380,6 @@
             </div>
         </section>
 
-        <!-- Certificate Verification -->
         <section class="section-container">
             <div class="section-header"><p class="section-label">Verify Authenticity</p><h2 class="section-title">CERTIFICATE <span>VERIFICATION</span></h2></div>
             <div style="max-width:450px;margin:0 auto;text-align:center;">
@@ -374,7 +388,6 @@
             </div>
         </section>
 
-        <!-- Interactive Terminal -->
         <section class="section-container">
             <div class="section-header"><p class="section-label">Command Line Interface</p><h2 class="section-title">INTERACTIVE <span>TERMINAL</span></h2></div>
             <div class="terminal-section">
@@ -412,7 +425,6 @@
     </div>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAG_zsukQSTR7TrMqoNSa3rWCzvDH7SuFE",
             authDomain: "sanctuary-os-e635d.firebaseapp.com",
@@ -424,7 +436,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Particles Background
         const particlesCanvas = document.getElementById('particles-canvas');
         const pCtx = particlesCanvas.getContext('2d');
         let particlesArr = [];
@@ -459,7 +470,6 @@
         }
         animateParticles();
 
-        // 3D Globe
         const globeContainer = document.getElementById('globe-container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, globeContainer.clientWidth / globeContainer.clientHeight, 0.1, 100);
@@ -521,7 +531,6 @@
             camera.updateProjectionMatrix();
         });
 
-        // Countdown
         const targetDate = new Date('2026-08-15T09:00:00+05:30').getTime();
         function updateCountdown() {
             const now = Date.now();
@@ -545,12 +554,10 @@
         updateCountdown();
         setInterval(updateCountdown, 1000);
 
-        // Navbar scroll & mobile toggle
         window.addEventListener('scroll', () => { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50); });
         document.getElementById('nav-toggle').addEventListener('click', () => { document.getElementById('nav-links').classList.toggle('mobile-open'); });
         document.querySelectorAll('.nav-links a').forEach(link => { link.addEventListener('click', () => { document.getElementById('nav-links').classList.remove('mobile-open'); }); });
 
-        // Counter animation
         const statObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -570,7 +577,6 @@
         }, { threshold: 0.5 });
         document.querySelectorAll('.stat-number[data-target]').forEach(el => statObserver.observe(el));
 
-        // Load mentors from Firestore
         function loadMentors() {
             const container = document.getElementById('mentorsContainer');
             db.collection('mentors').get().then(snapshot => {
@@ -590,13 +596,10 @@
                     </div>`;
                 });
                 container.innerHTML = html;
-            }).catch(() => {
-                container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">Could not load mentors.</p>';
-            });
+            }).catch(() => { container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">Could not load mentors.</p>'; });
         }
         window.addEventListener('DOMContentLoaded', loadMentors);
 
-        // Terminal
         const terminalInput = document.getElementById('terminal-input');
         const terminalBody = document.getElementById('terminal-body');
         const commands = {
@@ -626,7 +629,6 @@
             }
         });
 
-        // AI Assistant
         const aiBtn = document.getElementById('ai-btn');
         const aiPanel = document.getElementById('ai-chat-panel');
         const aiChatInput = document.getElementById('ai-chat-input');
@@ -669,7 +671,6 @@
         });
         aiChatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { document.getElementById('ai-send-btn').click(); } });
 
-        // Dark mode toggle
         document.getElementById('dark-mode-toggle').addEventListener('click', function() {
             if (document.body.style.background === 'rgb(240, 242, 245)') {
                 document.body.style.background = '#0a0b0f';
