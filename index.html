@@ -129,10 +129,50 @@
         .mentors-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:20px; }
         .mentor-card { background:var(--bg-glass); backdrop-filter:blur(12px); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px; text-align:center; transition:all var(--transition-smooth); }
         .mentor-card:hover { border-color:var(--border-glow); box-shadow:var(--shadow-glow-green); transform:translateY(-4px); }
-        .mentor-photo { width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid var(--border-glow); margin:0 auto 12px; background:var(--neon-green-dim); display:flex; align-items:center; justify-content:center; font-size:2rem; }
-        .mentor-name { font-family:var(--font-heading); font-size:0.9rem; letter-spacing:1px; margin-bottom:4px; }
-        .mentor-role { font-size:0.7rem; color:var(--neon-cyan); font-family:var(--font-mono); margin-bottom:8px; }
-        .mentor-bio { font-size:0.75rem; color:var(--text-secondary); }
+        /* ---- UPDATED MENTOR PHOTO SIZES ---- */
+        .mentor-photo {
+            width: 128px;                /* default (mobile) */
+            height: 128px;
+            border-radius: 50%;          /* circular */
+            object-fit: cover;
+            border: 2px solid var(--border-glow);
+            margin: 0 auto 16px;
+            background: var(--neon-green-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;           /* fallback icon size */
+        }
+        @media (min-width: 640px) {
+            .mentor-photo {
+                width: 160px;
+                height: 160px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .mentor-photo {
+                width: 176px;
+                height: 176px;
+            }
+        }
+        /* ---- PROPORTIONALLY LARGER TEXT ---- */
+        .mentor-name {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;           /* was 0.9rem */
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        .mentor-role {
+            font-size: 0.85rem;          /* was 0.7rem */
+            color: var(--neon-cyan);
+            font-family: var(--font-mono);
+            margin-bottom: 10px;
+        }
+        .mentor-bio {
+            font-size: 0.85rem;          /* was 0.75rem */
+            color: var(--text-secondary);
+        }
+        /* ----------------------------------- */
         .dashboard-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; }
         .dash-card { background:var(--bg-glass); backdrop-filter:blur(12px); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px; transition:all var(--transition-smooth); }
         .dash-card:hover { border-color:var(--border-glow); box-shadow:var(--shadow-glow-green); }
@@ -542,7 +582,7 @@
                 document.getElementById('cd-secs').textContent = '00';
                 return;
             }
-            const days = Math.floor(diff / (86400000));
+            const days = Math.floor(diff / 86400000);
             const hours = Math.floor((diff % 86400000) / 3600000);
             const mins = Math.floor((diff % 3600000) / 60000);
             const secs = Math.floor((diff % 60000) / 1000);
