@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     <style>
+        /* ======= EXISTING STYLES (UNCHANGED EXCEPT FOR ADDED FLAG CSS) ======= */
         :root {
             --bg-deep: #0a0b0f; --bg-primary: #0d1117; --bg-secondary: #111820;
             --bg-card: #141c26; --bg-glass: rgba(16, 22, 36, 0.75);
@@ -28,6 +29,8 @@
             --font-mono: 'JetBrains Mono', monospace; --nav-height: 70px;
             --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --saffron: #ff9933;
+            --green: #138807;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         html { scroll-behavior:smooth; font-size:16px; }
@@ -84,12 +87,59 @@
         .hero-welcome { font-family:var(--font-mono); font-size:0.75rem; letter-spacing:4px; color:var(--neon-cyan); text-transform:uppercase; margin-bottom:12px; }
         .hero-title { font-family:var(--font-heading); font-size:clamp(2.5rem,5vw,4.5rem); font-weight:900; line-height:1.1; color:#fff; margin-bottom:8px; letter-spacing:2px; }
         .hero-title span { background:linear-gradient(135deg, var(--neon-green), var(--neon-cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        .hero-subtitle { font-family:var(--font-heading); font-size:1rem; letter-spacing:3px; color:var(--text-secondary); margin-bottom:6px; }
-        .hero-tagline { font-family:var(--font-mono); font-size:0.85rem; letter-spacing:2px; color:var(--neon-green); margin-bottom:20px; }
+        .hero-subtitle { 
+            font-family: var(--font-heading); 
+            font-size: 1.05rem; 
+            letter-spacing: 2px; 
+            color: var(--text-secondary); 
+            border-left: 4px solid var(--saffron); 
+            padding-left: 12px; 
+            margin-bottom: 12px; 
+            line-height: 1.6;
+        }
+        .hero-tagline { 
+            font-family: var(--font-mono); 
+            font-size: 1rem; 
+            letter-spacing: 2px; 
+            color: var(--saffron); 
+            text-shadow: 0 0 12px rgba(255,153,51,0.8), 0 0 24px rgba(255,153,51,0.5); 
+            margin-bottom: 24px; 
+            animation: patrioticPulse 2s infinite; 
+        }
+        @keyframes patrioticPulse { 
+            0%, 100% { text-shadow: 0 0 12px var(--saffron), 0 0 24px var(--saffron); } 
+            50%      { text-shadow: 0 0 22px var(--saffron), 0 0 44px var(--green); } 
+        }
         .hero-badges { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
-        .hero-badge { padding:8px 16px; border-radius:20px; background:var(--bg-glass); border:1px solid var(--border-glow); font-size:0.75rem; font-weight:500; color:var(--text-primary); font-family:var(--font-mono); letter-spacing:0.5px; backdrop-filter:blur(10px); display:flex; align-items:center; gap:6px; }
+        .hero-badge { 
+            padding:8px 16px; 
+            border-radius:20px; 
+            background:var(--bg-glass); 
+            border:1px solid var(--border-glow); 
+            font-size:0.75rem; 
+            font-weight:500; 
+            color:var(--text-primary); 
+            font-family:var(--font-mono); 
+            letter-spacing:0.5px; 
+            backdrop-filter:blur(10px); 
+            display:flex; 
+            align-items:center; 
+            gap:6px; 
+        }
         .hero-badge .dot { width:7px; height:7px; border-radius:50%; background:var(--neon-green); animation:dotPulse 1.5s ease-in-out infinite; }
         @keyframes dotPulse { 0%,100%{opacity:1; box-shadow:0 0 6px var(--neon-green)} 50%{opacity:0.3; box-shadow:0 0 2px var(--neon-green)} }
+        .hero-badge.independence-badge {
+            background: linear-gradient(135deg, rgba(255,153,51,0.15), rgba(19,136,7,0.15));
+            border: 1.5px solid var(--saffron);
+            box-shadow: 0 0 15px rgba(255,153,51,0.4);
+            animation: flagWave 3s ease-in-out infinite;
+            font-weight: 600;
+        }
+        @keyframes flagWave {
+            0%, 100% { border-color: var(--saffron); box-shadow: 0 0 15px var(--saffron); }
+            33%      { border-color: #ffffff; box-shadow: 0 0 20px #ffffff; }
+            66%      { border-color: var(--green); box-shadow: 0 0 15px var(--green); }
+        }
         .hero-desc { color:var(--text-secondary); font-size:0.9rem; line-height:1.7; margin-bottom:28px; max-width:500px; }
         .hero-cta { display:flex; gap:16px; flex-wrap:wrap; }
         .btn-primary { padding:14px 32px; border-radius:28px; font-size:0.9rem; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block; letter-spacing:1px; font-family:var(--font-body); background:var(--neon-green); color:#000; border:none; box-shadow:0 0 30px rgba(0,255,136,0.4); transition:all var(--transition-fast); }
@@ -102,6 +152,68 @@
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         #globe-container { width:100%; max-width:550px; height:550px; position:relative; z-index:2; }
         #globe-container canvas { width:100% !important; height:100% !important; }
+
+        /* ======= NEW: WAVING INDIAN FLAG ANIMATION ======= */
+        .indian-flag-wrapper {
+            position: absolute;
+            top: 10%;
+            left: -30px;          /* sits to the left of the globe on larger screens */
+            z-index: 5;
+            width: 120px;
+            height: 80px;
+            filter: drop-shadow(0 0 12px rgba(255,153,51,0.7));
+            pointer-events: none; /* so it doesn't block globe interaction */
+        }
+        .indian-flag {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                #ff9933 0%, #ff9933 33.33%, 
+                #ffffff 33.33%, #ffffff 66.66%, 
+                #138807 66.66%, #138807 100%);
+            border-radius: 3px;
+            transform-origin: left center;
+            animation: flagWaveEffect 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes flagWaveEffect {
+            0%   { transform: perspective(200px) rotateY(0deg) skewY(0deg); }
+            25%  { transform: perspective(200px) rotateY(3deg) skewY(1deg); }
+            50%  { transform: perspective(200px) rotateY(0deg) skewY(0deg); }
+            75%  { transform: perspective(200px) rotateY(-3deg) skewY(-1deg); }
+            100% { transform: perspective(200px) rotateY(0deg) skewY(0deg); }
+        }
+        /* Ashoka Chakra (centered) */
+        .ashoka-chakra {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 26px;
+            height: 26px;
+            background: radial-gradient(circle, #000080 0%, #000080 40%, transparent 41%);
+            border-radius: 50%;
+            border: 2px solid #000080;
+            animation: spinChakra 8s linear infinite;
+        }
+        .ashoka-chakra::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes spinChakra {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to   { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Existing floating cards positioning (unchanged) */
         .floating-card { position:absolute; z-index:3; background:var(--bg-glass); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid var(--border-glow); border-radius:var(--radius-md); padding:16px 20px; box-shadow:var(--shadow-card); }
         .floating-card.status-card { top:5%; right:-20px; min-width:200px; animation:floatCard 4s ease-in-out infinite; }
         .floating-card.countdown-card { bottom:8%; right:-30px; min-width:220px; animation:floatCard 4s ease-in-out infinite 1s; }
@@ -115,6 +227,8 @@
         .countdown-unit { text-align:center; background:rgba(0,0,0,0.4); border-radius:var(--radius-sm); padding:8px 6px; min-width:44px; border:1px solid var(--border-subtle); }
         .countdown-unit .num { font-size:1.3rem; font-weight:700; color:var(--neon-green); letter-spacing:1px; }
         .countdown-unit .lbl { font-size:0.55rem; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase; }
+
+        /* ---- Rest of the styles (unchanged) ---- */
         .section-container { max-width:1300px; margin:0 auto; padding:60px 32px; position:relative; z-index:2; }
         .section-header { text-align:center; margin-bottom:50px; }
         .section-label { font-family:var(--font-mono); font-size:0.7rem; letter-spacing:4px; color:var(--neon-cyan); text-transform:uppercase; margin-bottom:8px; }
@@ -129,11 +243,10 @@
         .mentors-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:20px; }
         .mentor-card { background:var(--bg-glass); backdrop-filter:blur(12px); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px; text-align:center; transition:all var(--transition-smooth); }
         .mentor-card:hover { border-color:var(--border-glow); box-shadow:var(--shadow-glow-green); transform:translateY(-4px); }
-        /* ---- UPDATED MENTOR PHOTO SIZES ---- */
         .mentor-photo {
-            width: 128px;                /* default (mobile) */
+            width: 128px;
             height: 128px;
-            border-radius: 50%;          /* circular */
+            border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--border-glow);
             margin: 0 auto 16px;
@@ -141,38 +254,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;           /* fallback icon size */
+            font-size: 2.5rem;
         }
-        @media (min-width: 640px) {
-            .mentor-photo {
-                width: 160px;
-                height: 160px;
-            }
-        }
-        @media (min-width: 1024px) {
-            .mentor-photo {
-                width: 176px;
-                height: 176px;
-            }
-        }
-        /* ---- PROPORTIONALLY LARGER TEXT ---- */
-        .mentor-name {
-            font-family: var(--font-heading);
-            font-size: 1.1rem;           /* was 0.9rem */
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-        }
-        .mentor-role {
-            font-size: 0.85rem;          /* was 0.7rem */
-            color: var(--neon-cyan);
-            font-family: var(--font-mono);
-            margin-bottom: 10px;
-        }
-        .mentor-bio {
-            font-size: 0.85rem;          /* was 0.75rem */
-            color: var(--text-secondary);
-        }
-        /* ----------------------------------- */
+        @media (min-width: 640px) { .mentor-photo { width: 160px; height: 160px; } }
+        @media (min-width: 1024px) { .mentor-photo { width: 176px; height: 176px; } }
+        .mentor-name { font-family: var(--font-heading); font-size: 1.1rem; letter-spacing: 1px; margin-bottom: 6px; }
+        .mentor-role { font-size: 0.85rem; color: var(--neon-cyan); font-family: var(--font-mono); margin-bottom: 10px; }
+        .mentor-bio { font-size: 0.85rem; color: var(--text-secondary); }
         .dashboard-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; }
         .dash-card { background:var(--bg-glass); backdrop-filter:blur(12px); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px; transition:all var(--transition-smooth); }
         .dash-card:hover { border-color:var(--border-glow); box-shadow:var(--shadow-glow-green); }
@@ -238,6 +326,8 @@
         .footer .social-icons { display:flex; justify-content:center; gap:16px; margin-top:16px; }
         .footer .social-icons a { color:var(--text-secondary); font-size:1.2rem; transition:all var(--transition-fast); text-decoration:none; }
         .footer .social-icons a:hover { color:var(--neon-green); }
+
+        /* Responsive adjustments for flag */
         @media (max-width:1024px) {
             .hero-bottom { flex-direction:column; text-align:center; }
             .hero-left { max-width:100%; }
@@ -245,6 +335,7 @@
             #globe-container { max-width:350px; height:350px; }
             .floating-card { position:relative; right:auto; top:auto; bottom:auto; margin:8px; }
             .floating-card.status-card, .floating-card.countdown-card { right:auto; }
+            .indian-flag-wrapper { top: 5%; left: 5px; width: 90px; height: 60px; }
             .nav-links { display:none; } .nav-toggle { display:block; }
             .nav-links.mobile-open { display:flex; flex-direction:column; position:absolute; top:var(--nav-height); left:0; width:100%; background:rgba(10,11,15,0.97); backdrop-filter:blur(20px); padding:20px; gap:10px; border-bottom:1px solid var(--border-glow); }
             .ai-chat-panel { width:90vw; right:5vw; bottom:90px; }
@@ -256,6 +347,7 @@
             .stats-grid { grid-template-columns:repeat(2,1fr); }
             .countdown-display { gap:4px; } .countdown-unit { min-width:32px; padding:6px 4px; }
             .countdown-unit .num { font-size:1rem; }
+            .indian-flag-wrapper { top: 2%; left: 0; width: 70px; height: 50px; }
         }
     </style>
 </head>
@@ -290,28 +382,26 @@
 
     <div class="main-content">
         <section class="hero-section">
-            <!-- Full-width centered banner -->
             <div class="hero-top" style="text-align:center; animation: fadeInUp 0.8s ease-out;">
                 <img src="https://github.com/cypher003003/sanctuary-os/blob/main/ChatGPT%20Image%20Jun%2022%2C%202026%2C%2005_25_54%20AM.png?raw=true" 
                      alt="Masterclass Banner" 
                      style="max-width:60%; height:auto; filter:drop-shadow(0 0 10px rgba(0,255,136,0.3));">
             </div>
-            <!-- Two-column layout for logos + text and globe -->
             <div class="hero-bottom">
                 <div class="hero-left">
-                    <!-- School and company logos -->
                     <div class="hero-logos">
                         <img src="https://github.com/cypher003003/sanctuary-os/blob/main/brand-ico.png?raw=true" alt="School Logo">
                         <img src="https://github.com/cypher003003/sanctuary-os/blob/main/ChatGPT%20Image%20Jun%2022%2C%202026%2C%2006_23_45%20AM.png?raw=true" alt="Robust Data Developers">
                     </div>
                     <p class="hero-welcome">WELCOME TO</p>
                     <h1 class="hero-title">PROJECT:<br><span>SANCTUARY</span></h1>
-                    <p class="hero-subtitle">IoT Engineering & Cybersecurity Masterclass</p>
-                    <p class="hero-tagline">BUILD • CONNECT • SECURE</p>
+                    <p class="hero-subtitle">IoT Engineering & Cybersecurity Masterclass | 🇮🇳 Independence Day Edition</p>
+                    <p class="hero-tagline">BUILD • CONNECT • SECURE • JAI HIND</p>
                     <div class="hero-badges">
                         <span class="hero-badge"><span class="dot"></span> 15–17 August 2026</span>
                         <span class="hero-badge">📍 Hirmi, Chhattisgarh</span>
                         <span class="hero-badge">🏫 The Aditya Birla Public School</span>
+                        <span class="hero-badge independence-badge">🇮🇳 79th Independence Day</span>
                     </div>
                     <p class="hero-desc">A 13-hour intensive, hands-on masterclass combining IoT engineering with cybersecurity, ethical hacking awareness, and real-world projects.</p>
                     <div class="hero-cta">
@@ -320,7 +410,15 @@
                     </div>
                 </div>
                 <div class="hero-right">
-                    <div id="globe-container"></div>
+                    <div id="globe-container">
+                        <!-- Globe canvas inserted by Three.js -->
+                        <!-- INDIAN FLAG ANIMATION OVERLAY -->
+                        <div class="indian-flag-wrapper">
+                            <div class="indian-flag">
+                                <div class="ashoka-chakra"></div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="floating-card status-card">
                         <h4>🖥 SYSTEM STATUS</h4>
                         <div class="stat-row"><span>IoT Nodes</span><span class="val">128</span></div>
@@ -341,6 +439,7 @@
             </div>
         </section>
 
+        <!-- rest of the sections unchanged (stats, mentors, dashboard, etc.) -->
         <section class="section-container">
             <div class="stats-grid">
                 <div class="stat-card"><span class="stat-icon">⏱️</span><div class="stat-number" data-target="13">0</div><div class="stat-label">Hours of Training</div></div>
@@ -353,13 +452,8 @@
         </section>
 
         <section class="section-container">
-            <div class="section-header">
-                <p class="section-label">Our Experts</p>
-                <h2 class="section-title">MEET THE <span>MENTORS</span></h2>
-            </div>
-            <div class="mentors-grid" id="mentorsContainer">
-                <p style="text-align:center; color:var(--text-muted);">Loading mentors...</p>
-            </div>
+            <div class="section-header"><p class="section-label">Our Experts</p><h2 class="section-title">MEET THE <span>MENTORS</span></h2></div>
+            <div class="mentors-grid" id="mentorsContainer"><p style="text-align:center;color:var(--text-muted);">Loading mentors...</p></div>
         </section>
 
         <section class="section-container">
@@ -678,7 +772,7 @@
             hello: 'Hello! Welcome to PROJECT: SANCTUARY OS. How can I assist you today?',
             hi: 'Hi there! Ready to explore the world of IoT & Cybersecurity? Ask me anything!',
             help: 'I can help with: event details, curriculum, projects, schedule, registration, labs, missions, resources, and more!',
-            event: 'PROJECT: SANCTUARY OS is a 13-hour IoT Engineering & Cybersecurity Masterclass on 15-17 August 2026 at The Aditya Birla Public School, Hirmi, Chhattisgarh.',
+            event: 'PROJECT: SANCTUARY OS is a 13-hour IoT Engineering & Cybersecurity Masterclass on 15-17 August 2026 at The Aditya Birla Public School, Hirmi, Chhattisgarh. The first day coincides with India’s 79th Independence Day!',
             curriculum: 'The curriculum covers: Micro-Architecture & Firmware, Network Layers & Telemetry, and Enterprise Threat Analysis across 3 intensive missions.',
             projects: 'We have 8 amazing projects including Smart Medicine Box, Smart Attendance System, Smart Walking Stick, Smart Bus Driver Safety, and more!',
             schedule: 'Day 1: Firmware & Sensors | Day 2: Networks & Packet Analysis | Day 3: Threat Analysis & Certification.',
